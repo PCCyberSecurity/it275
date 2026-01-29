@@ -85,8 +85,27 @@ class TailCharacter {
     }
 
     [string] Render() {
-        $c = $Global:FadeColors[$this.FadeIndex]
         $esc = $Global:esc
+
+        # If we're at (or past) the final fade color, render a black space
+        # to fully clear the character cell rather than leaving the glyph
+        # behind when the TailCharacter is later culled.
+        if ($this.FadeIndex -ge ($Global:FadeColors.Count - 1)) {
+            $ret = "$esc[$($this.Y + 1);$($this.X + 1)H" +
+                   "$esc[48;2;0;0;0m" +
+                   " "
+
+            # Advance fade index only after configured interval has elapsed
+            $elapsed = (Get-Date) - $this.LastFadeTime
+            if ($elapsed.TotalMilliseconds -ge $this.FadeIntervalMs) {
+                $this.FadeIndex++
+                $this.LastFadeTime = Get-Date
+            }
+
+            return $ret
+        }
+
+        $c = $Global:FadeColors[$this.FadeIndex]
 
         # We use ANSI escape codes to set the RGB colors of this character
         # ANSI cursor positions are 1-based
