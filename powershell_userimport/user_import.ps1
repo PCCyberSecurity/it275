@@ -13,6 +13,7 @@ $row = 2
 
 while ($true) {
     # Assuming column A has the username, column B has the password, and column C has the full name
+    # Note - 1 = Column A, 2 = Column B, 3 = Column C
     $username = $sheet.Cells.Item($row, 1).Text
     $password = $sheet.Cells.Item($row, 2).Text
     $fullname = $sheet.Cells.Item($row, 3).Text
