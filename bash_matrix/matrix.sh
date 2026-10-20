@@ -5,7 +5,25 @@ FPS=60
 COLUMNS=40
 GLOW_LEN=3   # how many chars behind head stay bright
 
-GLYPHS='アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワン'
+GLYPHS='アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワン0123456789'
+
+# List of falling lines
+falling_lines=()
+# List of tail characters (dropped by falling lines)
+tail_characters=()
+
+create_falling_line() {
+  local col=$((RANDOM % cols))
+  local speed=$((1 + RANDOM % 3))
+  falling_lines+=("$col:$speed:0")  # format: col:speed:position
+}
+
+create_tail_character() {
+  local col=$1
+  local row=$2
+  local char="${GLYPHS:RANDOM%${#GLYPHS}:1}"
+  tail_characters+=("$col:$row:$char")  # format: col:row:char
+} 
 
 # Fade palette (after glow)
 FADE_COLORS=(46 40 34 28 22 16)   # green → black
